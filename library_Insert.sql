@@ -191,8 +191,8 @@ VALUES
 	(3003, 'Sheldon Nash '),
 	(3004, 'Rex Barnes'),
 	(3005, 'Hector Bishop '),
-	(3006, 'Stephen King'),
-	(3007, 'Lee Fox'),
+	(3006, 'Lee Fox'),
+	(3007, 'Stephen King'),
 	(3008, 'Michael C. Potter'),
 	(3009, 'Rachel A. Sullivan'),
 	(3010, 'Darnell M. Hargrove'),
@@ -201,8 +201,8 @@ VALUES
 	(3013, 'Trudy J. Heim'),
 	(3014, 'Trudy J. Heim'),
 	(3015, 'James E. Bayless'),
-	(3016, 'Stephen King'),
-	(3017, 'Tony Williams'),
+	(3016, 'Tony Williams'),
+	(3017, 'Stephen King'),
 	(3018, 'Sheldon Nash'),
 	(3019, 'Marie E. Maldonado');
 
@@ -260,27 +260,29 @@ WHERE (
 /*5 .) For each library branch, retrieve the branch name and the total number
 of books loaned out from that branch. */
 
-SELECT table_Library_Branch.Branch_Name, table_Book_Loans.Book_ID, COUNT(table_Book_Loans.Book_ID)
+SELECT table_Library_Branch.Branch_Name, COUNT(table_Book_Loans.Branch_ID)
 FROM table_Library_Branch JOIN table_Book_Loans ON table_Library_Branch.Branch_ID=table_Book_Loans.Branch_ID
-GROUP by table_Library_Branch.Branch_Name, table_Book_Loans.Book_ID, table_Book_Loans.Book_ID;
-
+GROUP BY Branch_Name, table_Book_Loans.Branch_ID;
 --------------------------------------------------------------------------
 
 /*6 .) Retrieve the names, addresses, and the number of books checked out for
 all borrowers who have more than five books checked out. */
 
-SELECT table_Borrower.Borrower_Name, table_Borrower.Borrower_Address, table_Borrower.Borrower_Phone, table_Book_Loans.Book_ID
+SELECT table_Borrower.Borrower_Name, table_borrower.Borrower_Address, COUNT(table_Book_Loans.Card_No) AS '# of books checked out'
 FROM table_Borrower JOIN table_Book_Loans ON table_Borrower.Card_No=table_Book_Loans.Card_No
-
+GROUP BY Borrower_Name, Borrower_Address, table_Book_Loans.Card_No
+HAVING COUNT(table_Book_Loans.Card_No) >= 5;
 
 --------------------------------------------------------------------------
 
 /*7 .) For each book authored (or co-authored) by "Stephen King", retrieve 
 the title and the number of copies owned by the library branch whose name is "Central". */
 
-SELECT
-FROM
-JOIN
+SELECT table_Books.Book_Title, table_Book_Authors.Author_Name, table_Library_Branch.Branch_Name, table_Book_Copies.Number_Of_Copies
+FROM table_Books JOIN table_Book_Authors ON table_Books.Book_ID=table_Book_Authors.Book_ID
+JOIN table_Book_Copies ON table_Books.Book_ID=table_Book_Copies.Book_ID
+JOIN table_Library_Branch ON table_Book_Copies.Branch_ID=table_Library_Branch.Branch_ID
+WHERE table_Book_Authors.Author_Name = 'Stephen King' AND table_Library_Branch.Branch_Name = 'Central';
 
 --------------------------------------------------------------------------
 
